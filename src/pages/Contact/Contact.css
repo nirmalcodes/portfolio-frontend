@@ -1,0 +1,15 @@
+.contacts {
+  line-height: 1;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--txt-dark);
+  text-decoration: none;
+}
+.contacts:hover {
+  color: var(--txt-dark);
+  text-decoration: none;
+}
+
+.contacts svg {
+  margin-right: 8px;
+}
