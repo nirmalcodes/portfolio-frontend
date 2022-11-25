@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import "./About.css";
 import { NiServices } from "../../container";
+import { client } from "../../client";
 
 const About = () => {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    const query = '*[_type == "services" && hidden == false]';
+
+    client.fetch(query).then((data) => {
+      setServices(data);
+    });
+  }, []);
+
+  // console.log(services);
+
   return (
     <Container>
       <Row className="vh_100 align_center content_cente px-4">
@@ -20,7 +33,7 @@ const About = () => {
           </div>
         </Col>
       </Row>
-      <NiServices />
+      {services.length > 0 && <NiServices servicesData={services} />}
     </Container>
   );
 };

@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { CommonCard } from "../../components";
 import "./Contact.css";
 import { FiPhone, FiMail, FiSend } from "react-icons/fi";
+import { client } from "../../client";
 
 const Contact = () => {
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    const query = '*[_type == "contacts" && hidden == false]';
+
+    client.fetch(query).then((data) => {
+      setContacts(data);
+    });
+  }, []);
+
+  // console.log(contacts);
+
   return (
     <div className="vh_100 app_content-wrap">
       <Container>
@@ -13,24 +26,30 @@ const Contact = () => {
             <h4 className="heading_text3 txt_center mb-4">Contact me</h4>
           </Col>
         </Row>
-        <Row className="content_cente mb-4">
-          <Col lg={4} className="mb-4">
-            {/* <a href="#" className="txt_center contacts"> */}
-              <CommonCard padding="2rem">
-                <FiMail />
-                <span>srnfernando102@gmail.com</span>
-              </CommonCard>
-            {/* </a> */}
-          </Col>
-          <Col lg={4} className="mb-4">
-            {/* <a href="#" className="txt_center contacts"> */}
-              <CommonCard padding="2rem">
-                <FiPhone />
-                <span>+94710814896</span>
-              </CommonCard>
-            {/* </a> */}
-          </Col>
-        </Row>
+        {contacts.length > 0 && (
+          <Row className="content_cente mb-4">
+            {contacts.map((contact, index) => (
+              <Col lg={4} className="mb-4">
+                <a
+                  href={
+                    contact.title === "Mobile"
+                      ? `tel:${contact.contact}`
+                      : `mailto:${contact.contact}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="txt_center contacts"
+                >
+                  <CommonCard padding="2rem">
+                    {contact.title === "Mobile" ? <FiPhone /> : <FiMail />}
+
+                    <span>{contact.contact}</span>
+                  </CommonCard>
+                </a>
+              </Col>
+            ))}
+          </Row>
+        )}
         <Row className="content_cente mb-4">
           <Col lg={8}>
             <Form>
@@ -58,7 +77,7 @@ const Contact = () => {
               <Row>
                 <Col>
                   <Button variant="primary" size="lg" type="submit" block>
-                    <FiSend className="mr-2"/>
+                    <FiSend className="mr-2" />
                     Send Message
                   </Button>
                 </Col>
